@@ -16,8 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$NibutanState {
-  int? get start => throw _privateConstructorUsedError;
-  int? get end => throw _privateConstructorUsedError;
+  int get start => throw _privateConstructorUsedError;
+  int get end => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $NibutanStateCopyWith<NibutanState> get copyWith =>
@@ -29,7 +29,7 @@ abstract class $NibutanStateCopyWith<$Res> {
   factory $NibutanStateCopyWith(
           NibutanState value, $Res Function(NibutanState) then) =
       _$NibutanStateCopyWithImpl<$Res>;
-  $Res call({int? start, int? end});
+  $Res call({int start, int end});
 }
 
 /// @nodoc
@@ -49,11 +49,11 @@ class _$NibutanStateCopyWithImpl<$Res> implements $NibutanStateCopyWith<$Res> {
       start: start == freezed
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       end: end == freezed
           ? _value.end
           : end // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ));
   }
 }
@@ -65,7 +65,7 @@ abstract class _$$_NibutanStateCopyWith<$Res>
           _$_NibutanState value, $Res Function(_$_NibutanState) then) =
       __$$_NibutanStateCopyWithImpl<$Res>;
   @override
-  $Res call({int? start, int? end});
+  $Res call({int start, int end});
 }
 
 /// @nodoc
@@ -88,11 +88,11 @@ class __$$_NibutanStateCopyWithImpl<$Res>
       start: start == freezed
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       end: end == freezed
           ? _value.end
           : end // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ));
   }
 }
@@ -100,12 +100,12 @@ class __$$_NibutanStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_NibutanState extends _NibutanState {
-  _$_NibutanState({this.start, this.end}) : super._();
+  _$_NibutanState({required this.start, required this.end}) : super._();
 
   @override
-  final int? start;
+  final int start;
   @override
-  final int? end;
+  final int end;
 
   @override
   String toString() {
@@ -134,13 +134,14 @@ class _$_NibutanState extends _NibutanState {
 }
 
 abstract class _NibutanState extends NibutanState {
-  factory _NibutanState({final int? start, final int? end}) = _$_NibutanState;
+  factory _NibutanState({required final int start, required final int end}) =
+      _$_NibutanState;
   _NibutanState._() : super._();
 
   @override
-  int? get start;
+  int get start;
   @override
-  int? get end;
+  int get end;
   @override
   @JsonKey(ignore: true)
   _$$_NibutanStateCopyWith<_$_NibutanState> get copyWith =>

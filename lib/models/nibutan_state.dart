@@ -4,11 +4,11 @@ part 'nibutan_state.freezed.dart';
 
 @freezed
 class NibutanState with _$NibutanState {
-  NibutanState._();
-  factory NibutanState({
-    int? start,
-    int? end,
-  }) = _NibutanState;
+  late final valid = start <= end;
 
-  late final valid = (start != null && end != null) && start! <= end!;
+  factory NibutanState({
+    required int start,
+    required int end,
+  }) = _NibutanState;
+  NibutanState._();
 }

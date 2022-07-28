@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_nibutan_app/models/nibutan_controller.dart';
+import 'package:flutter_nibutan_app/models/nibutan_state.dart';
+import 'package:flutter_nibutan_app/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SetUpScreen extends HookConsumerWidget {
@@ -14,8 +16,15 @@ class SetUpScreen extends HookConsumerWidget {
         children: [
           const _IntervalInput(),
           TextButton(
-            onPressed: ref.watch(nibutanProvider.select((value) => value.valid))
-                ? () {}
+            onPressed: ref.watch(nibutanProvider.select(
+              (value) => value.maybeWhen(
+                orElse: () => false,
+                data: (data) => data.valid,
+              ),
+            ))
+                ? () {
+                    ref.read(goRouterProvider).go('/solve');
+                  }
                 : null,
             child: const Text(
               'にぶたん開始！',
@@ -46,7 +55,9 @@ class _IntervalInput extends HookConsumerWidget {
       if (start == null || end == null) return;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(nibutanProvider.notifier).update(start, end);
+        ref.read(nibutanProvider.notifier).state = AsyncData(
+          NibutanState(start: start, end: end),
+        );
       });
 
       return;
