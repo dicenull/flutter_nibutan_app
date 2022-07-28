@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_nibutan_app/models/nibutan_controller.dart';
 import 'package:flutter_nibutan_app/models/nibutan_log.dart';
+import 'package:flutter_nibutan_app/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final _nibutanLogProvider = StateProvider<List<NibutanLog>>((_) => []);
-final _solvedProvider = StateProvider((_) => false);
+final _nibutanLogProvider =
+    StateProvider.autoDispose<List<NibutanLog>>((_) => []);
+final _solvedProvider = StateProvider.autoDispose((_) => false);
 
 class NibutanScreen extends HookConsumerWidget {
   const NibutanScreen({super.key});
@@ -91,6 +93,12 @@ class NibutanScreen extends HookConsumerWidget {
                           .toList(),
                     ),
                   ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    ref.read(goRouterProvider).go('/setup');
+                  },
+                  child: const Text('はじめから'),
                 )
               ],
             ),
