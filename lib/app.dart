@@ -10,6 +10,8 @@ class App extends HookConsumerWidget {
     final router = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       routerDelegate: router.routerDelegate,
       routeInformationParser: router.routeInformationParser,
       routeInformationProvider: router.routeInformationProvider,
