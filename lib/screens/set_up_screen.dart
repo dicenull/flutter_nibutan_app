@@ -42,8 +42,8 @@ class _IntervalInput extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final startTextCtrl = useTextEditingController(text: '0');
-    final endTextCtrl = useTextEditingController(text: '100');
+    final startTextCtrl = useTextEditingController();
+    final endTextCtrl = useTextEditingController();
 
     final startUpdate = useValueListenable(startTextCtrl);
     final endUpdate = useValueListenable(endTextCtrl);
@@ -77,6 +77,7 @@ class _IntervalInput extends HookConsumerWidget {
             style: style,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: const InputDecoration(hintText: '0'),
           ),
         ),
         const Padding(
@@ -93,6 +94,7 @@ class _IntervalInput extends HookConsumerWidget {
             style: style,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: const InputDecoration(hintText: '100'),
           ),
         ),
       ],
