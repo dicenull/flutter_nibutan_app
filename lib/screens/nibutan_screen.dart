@@ -22,14 +22,25 @@ class NibutanScreen extends HookConsumerWidget {
       data: (state) {
         final start = state.start;
         final end = state.end;
-        final interval = end - start;
 
-        final progress = useState((math.log(interval) / math.log(2)).ceil());
         final low = useState(start);
         final high = useState(end);
         final division = useState(3);
 
+        final interval = high.value - low.value;
         final middle = (low.value + high.value) / 2;
+        final progress =
+            (interval > 0) ? (math.log(interval) / math.log(2)).ceil() : 0;
+
+        useEffect(() {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (progress <= 0) {
+              ref.read(_solvedProvider.notifier).state = true;
+            }
+          });
+
+          return;
+        }, [progress]);
 
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
@@ -38,7 +49,7 @@ class NibutanScreen extends HookConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('にぶたん残り: ${progress.value}'),
+                Text('にぶたん残り: $progress'),
                 _ProgressButton(
                   middle: middle.round(),
                   low: low,
@@ -46,11 +57,6 @@ class NibutanScreen extends HookConsumerWidget {
                   onTap: (log) {
                     ref.read(_nibutanLogProvider).add(log);
                     division.value = division.value * 2 + 1;
-                    progress.value--;
-
-                    if (progress.value <= 0) {
-                      ref.read(_solvedProvider.notifier).state = true;
-                    }
                   },
                 ),
                 _IntervalText(
