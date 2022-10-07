@@ -20,96 +20,7 @@ class NibutanScreen extends HookConsumerWidget {
     return asyncValue.maybeWhen(
       orElse: () => const SizedBox.shrink(),
       data: (state) {
-        final start = state.start;
-        final end = state.end;
-
-        final low = useState(start);
-        final high = useState(end);
-        final division = useState(3);
-
-        final interval = high.value - low.value;
-        final middle = (low.value + high.value) / 2;
-        final progress =
-            (interval > 0) ? (math.log(interval) / math.log(2)).ceil() : 0;
-
-        useEffect(() {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (progress <= 0) {
-              ref.read(_solvedProvider.notifier).state = true;
-            }
-          });
-
-          return;
-        }, [progress]);
-
-        return Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
-          body: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('にぶたん残り: $progress'),
-                _ProgressButton(
-                  middle: middle.round(),
-                  low: low,
-                  high: high,
-                  onTap: (log) {
-                    ref.read(_nibutanLogProvider).add(log);
-                    division.value = division.value * 2 + 1;
-                  },
-                ),
-                _IntervalText(
-                  start: start,
-                  end: end,
-                ),
-                IgnorePointer(
-                  ignoring: true,
-                  child: Slider(
-                    min: start.toDouble(),
-                    max: end.toDouble(),
-                    onChanged: (_) {},
-                    divisions: division.value + 1,
-                    label: middle.round().toString(),
-                    value: middle,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Container(
-                    color: Theme.of(context).primaryColor,
-                    constraints: const BoxConstraints(
-                      maxHeight: 300,
-                      maxWidth: 400,
-                    ),
-                    child: ListView(
-                      scrollDirection: Axis.vertical,
-                      children: ref
-                          .watch(_nibutanLogProvider.select((value) => value))
-                          .map(
-                            (logData) => Text(
-                              logData.displayText,
-                              style: TextStyle(
-                                color: logData.success
-                                    ? Colors.blue
-                                    : Colors.orange,
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    ref.read(goRouterProvider).go('/setup');
-                  },
-                  child: const Text('はじめから'),
-                )
-              ],
-            ),
-          ),
-        );
+        return _Screen(state.start, state.end);
       },
     );
   }
@@ -198,6 +109,103 @@ class _ProgressButton extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Screen extends HookConsumerWidget {
+  final int start;
+  final int end;
+
+  const _Screen(this.start, this.end);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final low = useState(start);
+    final high = useState(end);
+    final division = useState(3);
+
+    final interval = high.value - low.value;
+    final middle = (low.value + high.value) / 2;
+    final progress =
+        (interval > 0) ? (math.log(interval) / math.log(2)).ceil() : 0;
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (progress <= 0) {
+          ref.read(_solvedProvider.notifier).state = true;
+        }
+      });
+
+      return;
+    }, [progress]);
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('にぶたん残り: $progress'),
+            _ProgressButton(
+              middle: middle.round(),
+              low: low,
+              high: high,
+              onTap: (log) {
+                ref.read(_nibutanLogProvider).add(log);
+                division.value = division.value * 2 + 1;
+              },
+            ),
+            _IntervalText(
+              start: start,
+              end: end,
+            ),
+            IgnorePointer(
+              ignoring: true,
+              child: Slider(
+                min: start.toDouble(),
+                max: end.toDouble(),
+                onChanged: (_) {},
+                divisions: division.value + 1,
+                label: middle.round().toString(),
+                value: middle,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Container(
+                color: Theme.of(context).primaryColor,
+                constraints: const BoxConstraints(
+                  maxHeight: 300,
+                  maxWidth: 400,
+                ),
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: ref
+                      .watch(_nibutanLogProvider.select((value) => value))
+                      .map(
+                        (logData) => Text(
+                          logData.displayText,
+                          style: TextStyle(
+                            color:
+                                logData.success ? Colors.blue : Colors.orange,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                ref.read(goRouterProvider).go('/setup');
+              },
+              child: const Text('はじめから'),
+            )
+          ],
+        ),
       ),
     );
   }
