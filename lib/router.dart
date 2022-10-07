@@ -9,7 +9,7 @@ final goRouterProvider = Provider(
     routes: [
       GoRoute(
         path: '/',
-        redirect: (_) => '/setup',
+        redirect: (_, __) => '/setup',
       ),
       GoRoute(
         path: '/setup',
