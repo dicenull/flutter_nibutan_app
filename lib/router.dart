@@ -1,3 +1,5 @@
+import 'package:flutter_nibutan_app/models/nibutan_controller.dart';
+import 'package:flutter_nibutan_app/models/nibutan_state.dart';
 import 'package:flutter_nibutan_app/screens/nibutan_screen.dart';
 import 'package:flutter_nibutan_app/screens/result_screen.dart';
 import 'package:flutter_nibutan_app/screens/set_up_screen.dart';
@@ -17,7 +19,18 @@ final goRouterProvider = Provider(
       ),
       GoRoute(
         path: '/solve',
-        builder: ((context, state) => const NibutanScreen()),
+        builder: ((context, state) {
+          final start = int.parse(state.queryParams['start']!);
+          final end = int.parse(state.queryParams['end']!);
+
+          Future(() {
+            ref.read(nibutanProvider.notifier).initialize(
+                  NibutanState(start: start, end: end),
+                );
+          });
+
+          return NibutanScreen(start, end);
+        }),
       ),
       GoRoute(
         path: '/result',

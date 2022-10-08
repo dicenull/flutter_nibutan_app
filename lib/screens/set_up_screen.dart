@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_nibutan_app/models/nibutan_controller.dart';
 import 'package:flutter_nibutan_app/models/nibutan_state.dart';
 import 'package:flutter_nibutan_app/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+final setupProvider =
+    StateProvider<AsyncValue<NibutanState>>((_) => const AsyncValue.loading());
 
 class SetUpScreen extends HookConsumerWidget {
   const SetUpScreen({super.key});
@@ -16,16 +18,22 @@ class SetUpScreen extends HookConsumerWidget {
         children: [
           const _IntervalInput(),
           TextButton(
-            onPressed: ref.watch(nibutanProvider.select(
+            onPressed: ref.watch(setupProvider.select(
               (value) => value.maybeWhen(
-                orElse: () => false,
-                data: (data) => data.valid,
-              ),
-            ))
-                ? () {
-                    ref.read(goRouterProvider).go('/solve');
-                  }
-                : null,
+                  orElse: () => null,
+                  data: (data) {
+                    if (!data.valid) return null;
+
+                    return () {
+                      final start = data.start;
+                      final end = data.end;
+
+                      ref
+                          .read(goRouterProvider)
+                          .go('/solve?start=$start&end=$end');
+                    };
+                  }),
+            )),
             child: const Text(
               'にぶたん開始！',
               style: TextStyle(fontSize: 32),
@@ -47,15 +55,14 @@ class _IntervalInput extends HookConsumerWidget {
 
     final startUpdate = useValueListenable(startTextCtrl);
     final endUpdate = useValueListenable(endTextCtrl);
+    final start = int.tryParse(startUpdate.text);
+    final end = int.tryParse(endUpdate.text);
 
     useEffect(() {
-      final start = int.tryParse(startUpdate.text);
-      final end = int.tryParse(endUpdate.text);
-
       if (start == null || end == null) return;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(nibutanProvider.notifier).state = AsyncData(
+        ref.read(setupProvider.notifier).state = AsyncData(
           NibutanState(start: start, end: end),
         );
       });
